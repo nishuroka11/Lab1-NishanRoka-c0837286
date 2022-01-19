@@ -30,6 +30,8 @@ class ViewController: UIViewController {
     var firstTurn = Turn.Cross
     var currentTurn = Turn.Cross
     
+    var crossP = Player()
+    
     var CROSS = "X"
     var NOUGHT = "O"
     
@@ -74,7 +76,7 @@ class ViewController: UIViewController {
             resultAlert(title: "Noughts Win!")
         }
         
-        if(fullBoard())
+        if(crossP.fullBoard(board: board))
         {
             resultAlert(title: "Draw")
         }
@@ -107,40 +109,14 @@ class ViewController: UIViewController {
         let message = "\nNoughts " + String(noughtsScore) + "\n\nCrosses " + String(crossesScore)
         let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in
-            self.resetBoard()
+            self.crossP.resetBoard(board: self.board)
         }))
         self.present(ac, animated: true)
     }
     
-    func resetBoard()
-    {
-        for button in board
-        {
-            button.setTitle(nil, for: .normal)
-            button.isEnabled = true
-        }
-        if firstTurn == Turn.Nought
-        {
-            firstTurn = Turn.Cross
-        }
-        else if firstTurn == Turn.Cross
-        {
-            firstTurn = Turn.Nought
-        }
-        currentTurn = firstTurn
-    }
     
-    func fullBoard() -> Bool
-    {
-        for button in board
-        {
-            if button.title(for: .normal) == nil
-            {
-                return false
-            }
-        }
-        return true
-    }
+    
+    
     
     func addToBoard(_ sender: UIButton)
     {
@@ -165,7 +141,7 @@ class ViewController: UIViewController {
     @IBAction func resetGame(_ sender: UISwipeGestureRecognizer) {
         switch sender.direction {
         case .right:
-            resetBoard()
+            crossP.resetBoard(board: board)
             crossesScore = 0
             noughtsScore = 0
             crossScore.text = "0"
