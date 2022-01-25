@@ -48,6 +48,8 @@ class ViewController: UIViewController {
     var noughtsScore = 0
     var crossesScore = 0
     
+    var boardState = [BoardState]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -73,6 +75,25 @@ class ViewController: UIViewController {
         board.append(c1)
         board.append(c2)
         board.append(c3)
+        
+        let request: NSFetchRequest<BoardState> = BoardState.fetchRequest()
+        request.returnsObjectsAsFaults = false
+        do {
+            boardState = try context.fetch(request)
+            print("boardState", boardState)
+            if boardState.count > 0 {
+                for btn in board {
+                    let hasPosition = boardState.first(where: {$0.buttonTag == String(btn.tag)})
+                    if hasPosition != nil {
+                        btn.setTitle(hasPosition?.player, for: .normal)
+                        btn.isEnabled = false
+                    }
+                    
+                }
+            }
+        } catch {
+            print("Error loading folders \(error.localizedDescription)")
+        }
     }
     
     func loadWins() {
@@ -201,6 +222,17 @@ class ViewController: UIViewController {
     {
         if(sender.title(for: .normal) == nil)
         {
+            let newState = BoardState(context: context)
+            newState.buttonTag = String(sender.tag)
+            newState.player = currentTurn == Turn.Nought ? "O" : "X"
+            boardState.append(newState)
+            
+            do {
+                try context.save()
+            } catch{
+                print("Error", error.localizedDescription)
+            }
+            
             if(currentTurn == Turn.Nought)
             {
                 sender.setTitle(NOUGHT, for: .normal)
@@ -227,6 +259,16 @@ class ViewController: UIViewController {
             crossScore.text = "0"
             noughtScore.text = "0"
             forTurn.text = ""
+            for state in boardState {
+                print(state)
+                context.delete(state)
+                do {
+                    try context.save()
+                } catch{
+                    print("Error", error.localizedDescription)
+                }
+            }
+            boardState.removeAll()
         default:
             break
         }
@@ -256,15 +298,20 @@ class ViewController: UIViewController {
                 lastTap.setTitle(nil, for: .normal)
                 lastTap.isEnabled = true
                 
+                let deleteState = boardState.first(where: {$0.buttonTag == String(lastTap.tag)})
+                if deleteState != nil {
+                    context.delete(deleteState!)
+                    do {
+                        try context.save()
+                    } catch{
+                        print("Error", error.localizedDescription)
+                    }
+                }
+                
+                
             }else{
                 print("Too many shakes")
             }
-            
-            
-            
-            
-            
-            
             
         }
     }
