@@ -6,13 +6,20 @@
 //
 
 import UIKit
+import CoreData
 
 class ViewController: UIViewController {
+    
+    
+    
+    
+    var shakeCount = 0
     
     enum Turn {
         case Nought
         case Cross
     }
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     @IBOutlet weak var forTurn: UILabel!
     @IBOutlet weak var crossScore: UILabel!
@@ -36,6 +43,7 @@ class ViewController: UIViewController {
     var NOUGHT = "O"
     
     var board = [UIButton]()
+    var lastTap:UIButton!
     
     var noughtsScore = 0
     var crossesScore = 0
@@ -44,7 +52,15 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         initBoard()
+        loadWins()
+        
+        //for shake gesture
+        becomeFirstResponder()
+        
     }
+    
+    var winState:Wins!
+    
     
     func initBoard()
     {
@@ -59,14 +75,47 @@ class ViewController: UIViewController {
         board.append(c3)
     }
     
+    func loadWins() {
+        
+        let request: NSFetchRequest<Wins> = Wins.fetchRequest()
+        
+        do {
+            let winStates = try context.fetch(request)
+            winState = winStates.first
+            if winState != nil {
+                crossesScore = Int(winState.crossWin!) ?? 0
+                noughtsScore = Int(winState.noughtWin!) ?? 0
+                crossScore.text = winState.crossWin
+                noughtScore.text = winState.noughtWin
+            }
+        } catch {
+            print("Error loading folders \(error.localizedDescription)")
+        }
+    }
+    
     @IBAction func boardTap(_ sender: Any) {
         addToBoard(sender as! UIButton)
+        lastTap = sender as? UIButton
+        shakeCount = 0
         
         if checkForVictory(CROSS)
         {
             crossesScore += 1
             crossScore.text = String(crossesScore)
             resultAlert(title: "Crosses Win!")
+            
+            if winState == nil {
+                winState = Wins(context: context)
+            }
+            winState.crossWin = crossScore.text
+            winState.noughtWin = noughtScore.text
+            do{
+                try context.save()
+            } catch (let error) {
+                print(error)
+                return
+            }
+            
         }
         
         if checkForVictory(NOUGHT)
@@ -74,10 +123,40 @@ class ViewController: UIViewController {
             noughtsScore += 1
             noughtScore.text = String(noughtsScore)
             resultAlert(title: "Noughts Win!")
+            
+            if winState == nil {
+                winState = Wins(context: context)
+            }
+            winState.crossWin = crossScore.text
+            winState.noughtWin = noughtScore.text
+            do{
+                try context.save()
+            } catch (let error) {
+                print(error)
+                return
+            }
+            do{
+                try context.save()
+            }catch{
+                print("Error saving data \(error.localizedDescription)")
+            }
+            
         }
         
         if(crossP.fullBoard(board: board))
         {
+            if winState == nil {
+                winState = Wins(context: context)
+            }
+            winState.crossWin = crossScore.text
+            winState.noughtWin = noughtScore.text
+            do{
+                try context.save()
+            } catch (let error) {
+                print(error)
+                return
+            }
+            
             resultAlert(title: "Draw")
         }
     }
@@ -127,6 +206,7 @@ class ViewController: UIViewController {
                 sender.setTitle(NOUGHT, for: .normal)
                 currentTurn = Turn.Cross
                 forTurn.text = CROSS
+                
             }
             else if(currentTurn == Turn.Cross)
             {
@@ -153,7 +233,41 @@ class ViewController: UIViewController {
     }
     
     
+    //shake gesture
+    override var canBecomeFirstResponder: Bool{
+        return true
+    }
     
+    
+    override func motionEnded(_ motion: UIEvent.EventSubtype, with event: UIEvent?) {
+        if motion == .motionShake{
+            shakeCount += 1
+            if (shakeCount < 2){
+                let random = lastTap.title(for: .normal)!
+                if random == "X"{
+                    currentTurn = Turn.Cross
+                    forTurn.text = CROSS
+                    
+                }else{
+                    currentTurn = Turn.Nought
+                    forTurn.text = NOUGHT
+                    
+                }
+                lastTap.setTitle(nil, for: .normal)
+                lastTap.isEnabled = true
+                
+            }else{
+                print("Too many shakes")
+            }
+            
+            
+            
+            
+            
+            
+            
+        }
+    }
     
     
     

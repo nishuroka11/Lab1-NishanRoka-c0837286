@@ -14,6 +14,7 @@
 		777899D3279639BC00C36B58 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 777899D2279639BC00C36B58 /* Assets.xcassets */; };
 		777899D6279639BC00C36B58 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 777899D4279639BC00C36B58 /* LaunchScreen.storyboard */; };
 		777899FB27979CEC00C36B58 /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777899FA27979CEC00C36B58 /* Player.swift */; };
+		777899FE279F76D600C36B58 /* SaveState.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 777899FC279F76D600C36B58 /* SaveState.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		777899DC279639BE00C36B58 /* Lab1-NishanRoka-c0837286Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Lab1-NishanRoka-c0837286Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		777899E6279639BE00C36B58 /* Lab1-NishanRoka-c0837286UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Lab1-NishanRoka-c0837286UITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		777899FA27979CEC00C36B58 /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
+		777899FD279F76D600C36B58 /* SaveState.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SaveState.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +103,7 @@
 				777899D2279639BC00C36B58 /* Assets.xcassets */,
 				777899D4279639BC00C36B58 /* LaunchScreen.storyboard */,
 				777899D7279639BC00C36B58 /* Info.plist */,
+				777899FC279F76D600C36B58 /* SaveState.xcdatamodeld */,
 			);
 			path = "Lab1-NishanRoka-c0837286";
 			sourceTree = "<group>";
@@ -246,6 +249,7 @@
 			files = (
 				777899FB27979CEC00C36B58 /* Player.swift in Sources */,
 				777899CE279639B700C36B58 /* ViewController.swift in Sources */,
+				777899FE279F76D600C36B58 /* SaveState.xcdatamodeld in Sources */,
 				777899CA279639B700C36B58 /* AppDelegate.swift in Sources */,
 				777899CC279639B700C36B58 /* SceneDelegate.swift in Sources */,
 			);
@@ -582,6 +586,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		777899FC279F76D600C36B58 /* SaveState.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				777899FD279F76D600C36B58 /* SaveState.xcdatamodel */,
+			);
+			currentVersion = 777899FD279F76D600C36B58 /* SaveState.xcdatamodel */;
+			path = SaveState.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 777899BE279639B700C36B58 /* Project object */;
 }
